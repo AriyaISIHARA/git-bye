@@ -1,0 +1,22 @@
+#!/bin/bash
+usage_exit() {
+    echo "Usage: git bye [-f]" 1>&2
+    exit 1
+}
+BRANCH_LIST=--merged
+BRANCH_DEL=-d
+while getopts f OPT
+do
+    case $OPT in
+        f)  shift
+	    BRANCH_LIST=
+            BRANCH_DEL=-D
+            ;;
+        \?) usage_exit
+            ;;
+    esac
+done
+if [ $# -ne 0 ]; then usage_exit; fi
+git checkout master
+git pull
+git branch $BRANCH_LIST | egrep -v "\*|master" | xargs git branch $BRANCH_DEL
